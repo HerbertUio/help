@@ -3,7 +3,7 @@ using Help.Desk.Infrastructure.Database.EntityFramework.Entities.Common;
 namespace Help.Desk.Infrastructure.Database.EntityFramework.Entities;
 
 public class UserEntity: BaseEntity, IIdentifiable
-{       
+{
     public int Id { get; set; }
     public string Name { get; set; }
     public string LastName { get; set; }

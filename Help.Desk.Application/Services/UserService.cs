@@ -1,6 +1,5 @@
-using Help.Desk.Application.Dtos.UserDtos;
-using Help.Desk.Application.UseCases.UserUseCases.UserManagement;
-using Help.Desk.Domain.Models;
+using Help.Desk.Application.UseCases.UserUseCases;
+using Help.Desk.Domain.Dtos.UserDtos;
 using Help.Desk.Domain.Responses;
 
 namespace Help.Desk.Application.Services;
@@ -8,52 +7,58 @@ namespace Help.Desk.Application.Services;
 public class UserService
 {
     private readonly CreateUserUseCase _createUserUseCase;
-    private readonly GetUserByIdUseCase _getUserByIdUseCase;
-    private readonly GetAllUsersUseCase _getAllUsersUseCase;
     private readonly UpdateUserUseCase _updateUserUseCase;
     private readonly DeleteUserUseCase _deleteUserUseCase;
-
+    private readonly GetUserByIdUseCase _getUserByIdUseCase;
+    private readonly GetAllUsersUseCase _getAllUsersUseCase;
+    private readonly GetByEmailUseCase _getByEmailUseCase;
+    
     public UserService(
         CreateUserUseCase createUserUseCase,
+        UpdateUserUseCase updateUserUseCase,
+        DeleteUserUseCase deleteUserUseCase,
         GetUserByIdUseCase getUserByIdUseCase,
         GetAllUsersUseCase getAllUsersUseCase,
-        DeleteUserUseCase deleteUserUseCase,
-        UpdateUserUseCase updateUserUseCase)
+        GetByEmailUseCase getByEmailUseCase
+    )
     {
         _createUserUseCase = createUserUseCase;
-        _getUserByIdUseCase = getUserByIdUseCase;
-        _getAllUsersUseCase = getAllUsersUseCase;
         _updateUserUseCase = updateUserUseCase;
         _deleteUserUseCase = deleteUserUseCase;
+        _getUserByIdUseCase = getUserByIdUseCase;
+        _getAllUsersUseCase = getAllUsersUseCase;
+        _getByEmailUseCase = getByEmailUseCase;
     }
 
-    public async Task<Result<UserModel>> CreateUser(CreateUserDto userDto)
+    public async Task<Result<UserDto>> CreateAsync(RegisterUserDto registerUserDto)
     {
-        var result = await _createUserUseCase.ExecuteCreateAsync(userDto);
+        var result = await _createUserUseCase.ExecuteCreateUserAsync(registerUserDto);
         return result;
     }
-
-    public async Task<Result<UserModel>> GetUserById(int id)
+    public async Task<Result<UserDto>> UpdateAsync(int id, RegisterUserDto registerUserDto)
     {
-        var result = await _getUserByIdUseCase.ExcecuteGetByIdAsync(id);
+        var result = await _updateUserUseCase.ExecuteUpdateAsync(id, registerUserDto);
         return result;
     }
-
-    public async Task<Result<List<UserModel>>> GetAllUsers()
-    {
-        var result = await _getAllUsersUseCase.ExecuteGetAllAsync();
-        return result;
-    }
-    
-    public async Task<Result<bool>> DeleteUser(int id)
+    public async Task<Result<bool>> DeleteAsync(int id)
     {
         var result = await _deleteUserUseCase.ExecuteDeleteAsync(id);
         return result;
     }
-    
-    public async Task<Result<UserModel>> UpdateUser(int id, CreateUserDto userDto)
+    public async Task<Result<UserDto>> GetByIdAsync(int id)
     {
-        var result = await _updateUserUseCase.ExecuteUpdateAsync(id, userDto);
+        var result = await _getUserByIdUseCase.ExecuteGetByIdAsync(id);
         return result;
     }
+    public async Task<Result<List<UserDto>>> GetAllAsync()
+    {
+        var result = await _getAllUsersUseCase.ExecuteGetAllAsync();
+        return result;
+    }
+    public async Task<Result<UserDto>> GetByEmailAsync(string email)
+    {
+        var result = await _getByEmailUseCase.ExecuteGetByEmailAsync(email);
+        return result;
+    }
+    
 }

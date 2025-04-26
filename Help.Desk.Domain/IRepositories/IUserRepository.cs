@@ -1,9 +1,9 @@
+using Help.Desk.Domain.Dtos.UserDtos;
 using Help.Desk.Domain.IRepositories.Common;
-using Help.Desk.Domain.Models;
 
 namespace Help.Desk.Domain.IRepositories;
 
-public interface IUserRepository: IGenericRepository<UserModel>
+public interface IUserRepository: IGenericRepository<UserDto>
 {
-    Task<UserModel?> GetUserByEmailAsync(string email);
+     Task<UserDto> GetByEmailAsync(string email);
 }

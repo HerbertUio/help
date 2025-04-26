@@ -2,7 +2,7 @@ using Help.Desk.Infrastructure.Database.EntityFramework.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Help.Desk.Infrastructure.Database.EntityFramework.Context.ConfigurationTables;
+namespace Help.Desk.Infrastructure.Database.EntityFramework.ConfigurationTables;
 
 public class UserConfiguration: IEntityTypeConfiguration<UserEntity>
 {

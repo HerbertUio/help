@@ -1,61 +1,126 @@
-using Help.Desk.Application.Dtos.UserDtos;
+using Help.Desk.Domain.Dtos.UserDtos;
 using Help.Desk.Domain.IRepositories;
-using Help.Desk.Domain.Models;
 using Help.Desk.Infrastructure.Database.EntityFramework.Context;
 using Help.Desk.Infrastructure.Database.EntityFramework.Entities;
 using Help.Desk.Infrastructure.Database.EntityFramework.Repositories.Common;
-using Help.Desk.Infrastructure.Database.EntityFramework.UseCases.UserUseCases.UserManagement;
+using Microsoft.EntityFrameworkCore;
 
 namespace Help.Desk.Infrastructure.Database.EntityFramework.Repositories;
 
 public class UserRepository: GenericRepository<UserEntity>, IUserRepository
 {
-    private readonly CreateUserUseCase _createUserUseCase;
-    private readonly GetUserByIdUseCase _getUserByIdUseCase;
-    private readonly GetAllUsersUseCase _getAllUsersUseCase;
-    private readonly UpdateUseUseCase _updateUserUseCase;
-    private readonly DeleteUserUseCase _deleteUserUseCase;
-
-
-    public UserRepository(HelpDeskDbContext context, CreateUserUseCase createUserUseCase, GetUserByIdUseCase getUserByIdUseCase, GetAllUsersUseCase getAllUsersUseCase, UpdateUseUseCase updateUserUseCase, DeleteUserUseCase deleteUserUseCase) : base(context)
+    private readonly HelpDeskDbContext _context;
+    private readonly DbSet<UserEntity> _users;
+    public UserRepository(HelpDeskDbContext context) : base(context)
     {
-        _createUserUseCase = createUserUseCase;
-        _getUserByIdUseCase = getUserByIdUseCase;
-        _getAllUsersUseCase = getAllUsersUseCase;
-        _updateUserUseCase = updateUserUseCase;
-        _deleteUserUseCase = deleteUserUseCase;
+        _context = context;
+        _users = context.Set<UserEntity>();
+    }
+    public async Task<UserDto> CreateAsync(UserDto entity)
+    {
+        var userEntity = new UserEntity
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            Email = entity.Email,
+            Password = entity.Password,
+            Role = entity.Role
+        };
+        await _users.AddAsync(userEntity);
+        await _context.SaveChangesAsync();
+        return new UserDto
+        {
+            Id = userEntity.Id,
+            Name = userEntity.Name,
+            Email = userEntity.Email,
+            Password = userEntity.Password,
+            Role = userEntity.Role
+        };
+        
     }
 
-    public async Task<UserModel> CreateAsync(UserModel userModel)
+    public async Task<List<UserDto>> GetAllAsync()
     {
-        var result = await _createUserUseCase.ExecuteCreateAsync(userModel);
-        return result;
+        var users = await _users.ToListAsync();
+        return users.Select(user => new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Password = user.Password,
+            Role = user.Role
+        }).ToList();
+        
     }
-    
-    public async Task<UserModel> UpdateAsync(UserModel userModel)
+
+    public async Task<UserDto> GetByIdAsync(int id)
     {
-        var result = await _updateUserUseCase.ExecuteUpdateAsync(userModel);
-        return result;
+        var user = await _users.FindAsync(id);
+        if (user == null)
+        {
+            return null;
+        }
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Password = user.Password,
+            Role = user.Role
+        };
     }
-    public async Task<bool> DeleteAsync(int userId)
+
+    public async Task<UserDto> UpdateAsync(UserDto entity)
     {
-        var result = await _deleteUserUseCase.ExecuteDeleteAsync(userId);
-        return result;
+        var userEntity = await _users.FindAsync(entity.Id);
+        if (userEntity == null)
+        {
+            return null;
+        }
+        userEntity.Name = entity.Name;
+        userEntity.Email = entity.Email;
+        userEntity.Password = entity.Password;
+        userEntity.Role = entity.Role;
+
+        _context.Entry(userEntity).State = EntityState.Modified;
+        await _context.SaveChangesAsync();
+        
+        return new UserDto
+        {
+            Id = userEntity.Id,
+            Name = userEntity.Name,
+            Email = userEntity.Email,
+            Password = userEntity.Password,
+            Role = userEntity.Role
+        };
     }
-    
-    public async Task<UserModel?> GetByIdAsync(int userId)
+
+    public async Task<bool> DeleteAsync(int id)
     {
-        var result = await _getUserByIdUseCase.ExecuteGetByIdAsync(userId);
-        return result;
+        var userEntity = await _users.FindAsync(id);
+        if (userEntity == null)
+        {
+            return false;
+        }
+        _users.Remove(userEntity);
+        await _context.SaveChangesAsync();
+        return true;
     }
-    public async Task<List<UserModel>> GetAllAsync()
+
+    public async Task<UserDto> GetByEmailAsync(string email)
     {
-        var result = await _getAllUsersUseCase.ExecuteGetAllAsync();
-        return result;
-    }
-    
-    public Task<UserModel?> GetUserByEmailAsync(string email)
-    {
-        throw new NotImplementedException();
+        var user = await _users.FirstOrDefaultAsync(u => u.Email == email);
+        if (user == null)
+        {
+            return null;
+        }
+        return new UserDto
+        {
+            Id = user.Id,
+            Name = user.Name,
+            Email = user.Email,
+            Password = user.Password,
+            Role = user.Role
+        };
     }
 }

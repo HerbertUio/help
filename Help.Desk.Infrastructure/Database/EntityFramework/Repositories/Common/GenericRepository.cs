@@ -1,43 +1,54 @@
+using Help.Desk.Domain.IRepositories.Common;
 using Help.Desk.Infrastructure.Database.EntityFramework.Context;
 using Microsoft.EntityFrameworkCore;
 
 namespace Help.Desk.Infrastructure.Database.EntityFramework.Repositories.Common;
 
-public class GenericRepository<TEntity> where TEntity : class
+public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
 {
-    protected readonly HelpDeskDbContext _context;
-    protected readonly DbSet<TEntity> _dbSet;
+    private readonly HelpDeskDbContext _context;
+    private readonly DbSet<TEntity> _dbSet;
     
-    public GenericRepository(HelpDeskDbContext context)
+    
+    public GenericRepository(HelpDeskDbContext context) 
     {
         _context = context;
         _dbSet = context.Set<TEntity>();
     }
-    
-    public virtual async Task<TEntity> CreateAsyncBase(TEntity entity)
+
+    public async Task<TEntity> CreateAsync(TEntity entity)
     {
-        await _dbSet.AddAsync(entity);
+        var result = await _dbSet.AddAsync(entity);
         await _context.SaveChangesAsync();
-        return entity;
+        return result.Entity;
     }
-    public virtual async Task<TEntity> UpdateAsyncBase(TEntity entity)
+
+    public Task<List<TEntity>> GetAllAsync()
     {
-        _dbSet.Update(entity);
-        await _context.SaveChangesAsync();
-        return entity;
+        return _dbSet.ToListAsync();
     }
-    public virtual async Task<TEntity> DeleteAsyncBase(TEntity entity)
-    {
-        _dbSet.Remove(entity);
-        await _context.SaveChangesAsync();
-        return entity;
-    }
-    public virtual async Task<TEntity> GetByIdAsyncBase(int id)
+
+    public async Task<TEntity> GetByIdAsync(int id)
     {
         return await _dbSet.FindAsync(id);
     }
-    public virtual async Task<List<TEntity>> GetAllAsyncBase()
+
+    public async Task<TEntity> UpdateAsync(TEntity entity)
     {
-        return await _dbSet.ToListAsync();
+        var entityEntry = _dbSet.Update(entity);
+        await _context.SaveChangesAsync();
+        return entityEntry.Entity;
+    }
+
+    public async Task<bool> DeleteAsync(int id)
+    {
+        var entity = await _dbSet.FindAsync(id);
+        if (entity == null)
+        {
+            return false; // La entidad no existe
+        }
+        _dbSet.Remove(entity);
+        await _context.SaveChangesAsync();
+        return true;
     }
 }

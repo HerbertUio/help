@@ -1,26 +1,32 @@
-using System.Text;
-
-using FluentValidation;
-using Help.Desk.Application.Validators.UserValidators;
-
+using Help.Desk.Infrastructure.Database.EntityFramework.Context;
+using Help.Desk.Infrastructure.Ioc;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddValidatorsFromAssemblyContaining<CreateUserValidator>(ServiceLifetime.Scoped);
-
-builder.Services.AddControllers();
+builder.Services.AddAuthorization();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options => {
-    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo { Title = "Help Desk API", Version = "v1" });
-    // TODO: Configurar Swagger para aceptar Token JWT (Bearer)
+builder.Services.AddSwaggerGen();
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("CORSPolicy",
+        b => b
+            .AllowAnyMethod()
+            .AllowAnyHeader()
+            .AllowCredentials()
+            .SetIsOriginAllowed((hosts) => true));
 });
 
-var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-var secretKey = jwtSettings["SecretKey"];
-
+builder.Services.RegisterDatabase(builder.Configuration).RegisterRepositories().RegisterServices().RegisterValidators();
 
 var app = builder.Build();
-
+app.UseCors("CORSPolicy");
+app.UseSwagger();
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "APIS HelpDesk V.1.0");
+    c.RoutePrefix = "swagger";
+    c.EnableFilter();
+});
 
 if (app.Environment.IsDevelopment())
 {
@@ -30,11 +36,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication(); // Habilitar autenticación
-//app.UseAuthorization();  // Habilitar autorización
 
-
-app.MapControllers(); // Mapea los controladores
-
-
+app.UseAuthorization();
+app.MapControllers();
 app.Run();
