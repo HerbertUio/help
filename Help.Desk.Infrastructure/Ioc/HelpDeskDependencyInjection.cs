@@ -20,7 +20,7 @@ public static class HelpDeskDependencyInjection
         string connectionString = configuration["ConnectionStrings:DefaultConnection"];
         collection.AddDbContext<HelpDeskDbContext>(options =>
         {
-            options.UseNpgsql(connectionString);
+            options.UseSqlServer(connectionString);
         });
         return collection;
     }
