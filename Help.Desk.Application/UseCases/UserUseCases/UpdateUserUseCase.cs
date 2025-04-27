@@ -33,6 +33,15 @@ public class UpdateUserUseCase
                 "Error de validación al actualizar usuario."
             );
         }
+        user.Name = registerUserDto.Name;
+        user.LastName = registerUserDto.LastName;
+        user.PhoneNumber = registerUserDto.PhoneNumber;
+        user.Email = registerUserDto.Email;
+        user.Password = registerUserDto.Password;
+        user.DepartmentId = registerUserDto.DepartmentId;
+        user.Role = registerUserDto.Role;
+        
+        
         var updatedUser = await _userRepository.UpdateAsync(user);
         if (updatedUser == null)
         {
