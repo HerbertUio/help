@@ -9,10 +9,12 @@ public class UpdateUserUseCase
 {
     private readonly IUserRepository _userRepository;
     private readonly IValidator<RegisterUserDto> _userValidator;
-    public UpdateUserUseCase(IUserRepository userRepository)
+    public UpdateUserUseCase(IUserRepository userRepository, IValidator<RegisterUserDto> userValidator)
     {
         _userRepository = userRepository;
+        _userValidator = userValidator;
     }
+    
     public async Task<Result<UserDto>> ExecuteUpdateAsync(int id, RegisterUserDto registerUserDto)
     {
         var user = await _userRepository.GetByIdAsync(id);

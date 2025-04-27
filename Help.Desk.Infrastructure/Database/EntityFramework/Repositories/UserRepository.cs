@@ -22,9 +22,13 @@ public class UserRepository: GenericRepository<UserEntity>, IUserRepository
         {
             Id = entity.Id,
             Name = entity.Name,
+            LastName = entity.LastName,
+            PhoneNumber = entity.PhoneNumber,
             Email = entity.Email,
             Password = entity.Password,
-            Role = entity.Role
+            DepartmentId = entity.DepartmentId,
+            Role = entity.Role,
+            Active = entity.Active,
         };
         await _users.AddAsync(userEntity);
         await _context.SaveChangesAsync();
@@ -32,9 +36,13 @@ public class UserRepository: GenericRepository<UserEntity>, IUserRepository
         {
             Id = userEntity.Id,
             Name = userEntity.Name,
+            LastName = userEntity.LastName,
+            PhoneNumber = userEntity.PhoneNumber,
             Email = userEntity.Email,
             Password = userEntity.Password,
-            Role = userEntity.Role
+            DepartmentId = userEntity.DepartmentId,
+            Role = userEntity.Role,
+            Active = userEntity.Active,
         };
         
     }
@@ -46,9 +54,13 @@ public class UserRepository: GenericRepository<UserEntity>, IUserRepository
         {
             Id = user.Id,
             Name = user.Name,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Password = user.Password,
-            Role = user.Role
+            DepartmentId = user.DepartmentId,
+            Role = user.Role,
+            Active = user.Active,
         }).ToList();
         
     }
@@ -64,9 +76,13 @@ public class UserRepository: GenericRepository<UserEntity>, IUserRepository
         {
             Id = user.Id,
             Name = user.Name,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Password = user.Password,
-            Role = user.Role
+            DepartmentId = user.DepartmentId,
+            Role = user.Role,
+            Active = user.Active,
         };
     }
 
@@ -77,21 +93,46 @@ public class UserRepository: GenericRepository<UserEntity>, IUserRepository
         {
             return null;
         }
-        userEntity.Name = entity.Name;
-        userEntity.Email = entity.Email;
-        userEntity.Password = entity.Password;
-        userEntity.Role = entity.Role;
+        
+        var userEntityToUpdate = new UserEntity
+        {
+            Id = entity.Id,
+            Name = entity.Name,
+            LastName = entity.LastName,
+            PhoneNumber = entity.PhoneNumber,
+            Email = entity.Email,
+            Password = entity.Password,
+            DepartmentId = entity.DepartmentId,
+            Role = entity.Role,
+            Active = entity.Active,
+        };
+        userEntity.Name = userEntityToUpdate.Name;
+        userEntity.LastName = userEntityToUpdate.LastName;
+        userEntity.PhoneNumber = userEntityToUpdate.PhoneNumber;
+        userEntity.Email = userEntityToUpdate.Email;
+        userEntity.Password = userEntityToUpdate.Password;
+        userEntity.DepartmentId = userEntityToUpdate.DepartmentId;
+        userEntity.Role = userEntityToUpdate.Role;
+        userEntity.Active = userEntityToUpdate.Active;
 
         _context.Entry(userEntity).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
-        
+         var changes = await _context.SaveChangesAsync();
+         if (changes == 0)
+         {
+             throw new Exception($"No se pudo actualizar el usuario {userEntity.Id}");       
+         }
+         
         return new UserDto
         {
             Id = userEntity.Id,
             Name = userEntity.Name,
+            LastName = userEntity.LastName,
+            PhoneNumber = userEntity.PhoneNumber,
             Email = userEntity.Email,
             Password = userEntity.Password,
-            Role = userEntity.Role
+            DepartmentId = userEntity.DepartmentId,
+            Role = userEntity.Role,
+            Active = userEntity.Active,
         };
     }
 
@@ -118,9 +159,13 @@ public class UserRepository: GenericRepository<UserEntity>, IUserRepository
         {
             Id = user.Id,
             Name = user.Name,
+            LastName = user.LastName,
+            PhoneNumber = user.PhoneNumber,
             Email = user.Email,
             Password = user.Password,
-            Role = user.Role
+            DepartmentId = user.DepartmentId,
+            Role = user.Role,
+            Active = user.Active,
         };
     }
 }

@@ -1,5 +1,7 @@
+using FluentValidation;
 using Help.Desk.Application.Services;
 using Help.Desk.Application.UseCases.UserUseCases;
+using Help.Desk.Application.Validators.UserValidators;
 using Help.Desk.Domain.IRepositories;
 using Help.Desk.Domain.IRepositories.Common;
 using Help.Desk.Infrastructure.Database.EntityFramework.Context;
@@ -41,6 +43,7 @@ public static class HelpDeskDependencyInjection
     }
     public static IServiceCollection RegisterValidators(this IServiceCollection collection)
     {
+        collection.AddValidatorsFromAssemblyContaining<RegisterUserValidator>();
 
         return collection;
     }
