@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Help.Desk.Infrastructure.Database.EntityFramework.Repositories;
 
-public class UserRepository: GenericRepository<UserEntity>, IUserRepository
+public class UserRepository: IUserRepository
 {
     private readonly HelpDeskDbContext _context;
     private readonly DbSet<UserEntity> _users;
-    public UserRepository(HelpDeskDbContext context) : base(context)
+    public UserRepository(HelpDeskDbContext context)
     {
         _context = context;
         _users = context.Set<UserEntity>();
