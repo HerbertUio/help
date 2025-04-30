@@ -29,6 +29,7 @@ public class UserRepository: IUserRepository
             DepartmentId = entity.DepartmentId,
             Role = entity.Role,
             Active = entity.Active,
+            IsAgent = entity.IsAgent,
         };
         await _users.AddAsync(userEntity);
         await _context.SaveChangesAsync();
@@ -43,6 +44,7 @@ public class UserRepository: IUserRepository
             DepartmentId = userEntity.DepartmentId,
             Role = userEntity.Role,
             Active = userEntity.Active,
+            IsAgent = userEntity.IsAgent,
         };
         
     }
@@ -61,6 +63,7 @@ public class UserRepository: IUserRepository
             DepartmentId = user.DepartmentId,
             Role = user.Role,
             Active = user.Active,
+            IsAgent = user.IsAgent,
         }).ToList();
         
     }
@@ -83,6 +86,7 @@ public class UserRepository: IUserRepository
             DepartmentId = user.DepartmentId,
             Role = user.Role,
             Active = user.Active,
+            IsAgent = user.IsAgent,
         };
     }
 
@@ -105,6 +109,7 @@ public class UserRepository: IUserRepository
             DepartmentId = entity.DepartmentId,
             Role = entity.Role,
             Active = entity.Active,
+            IsAgent = entity.IsAgent,
         };
         userEntity.Name = userEntityToUpdate.Name;
         userEntity.LastName = userEntityToUpdate.LastName;
@@ -114,6 +119,9 @@ public class UserRepository: IUserRepository
         userEntity.DepartmentId = userEntityToUpdate.DepartmentId;
         userEntity.Role = userEntityToUpdate.Role;
         userEntity.Active = userEntityToUpdate.Active;
+        userEntity.IsAgent = userEntityToUpdate.IsAgent;
+        
+        
 
         _context.Entry(userEntity).State = EntityState.Modified;
          var changes = await _context.SaveChangesAsync();
@@ -133,6 +141,7 @@ public class UserRepository: IUserRepository
             DepartmentId = userEntity.DepartmentId,
             Role = userEntity.Role,
             Active = userEntity.Active,
+            IsAgent = userEntity.IsAgent,
         };
     }
 
@@ -166,6 +175,7 @@ public class UserRepository: IUserRepository
             DepartmentId = user.DepartmentId,
             Role = user.Role,
             Active = user.Active,
+            IsAgent = user.IsAgent,
         };
     }
 }

@@ -33,6 +33,14 @@ public class UpdateUserUseCase
                 "Error de validación al actualizar usuario."
             );
         }
+        var existingUser = await _userRepository.GetByEmailAsync(registerUserDto.Email);
+        if (existingUser != null && existingUser.Id != id)
+        {
+            return Result<UserDto>.Failure(
+                new List<string> { "El correo electrónico ya está en uso." },
+                "Error al actualizar usuario."
+            );
+        }
         user.Name = registerUserDto.Name;
         user.LastName = registerUserDto.LastName;
         user.PhoneNumber = registerUserDto.PhoneNumber;
@@ -40,6 +48,8 @@ public class UpdateUserUseCase
         user.Password = registerUserDto.Password;
         user.DepartmentId = registerUserDto.DepartmentId;
         user.Role = registerUserDto.Role;
+        user.Active = true;
+        user.IsAgent = registerUserDto.IsAgent;
         
         
         var updatedUser = await _userRepository.UpdateAsync(user);

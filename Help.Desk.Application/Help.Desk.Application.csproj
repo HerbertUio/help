@@ -15,4 +15,8 @@
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.11.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="UseCases\DepartmentUseCases\" />
+    </ItemGroup>
+
 </Project>

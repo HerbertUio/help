@@ -34,6 +34,7 @@ public static class HelpDeskDependencyInjection
         collection.AddTransient<GetUserByIdUseCase>();
         collection.AddTransient<GetAllUsersUseCase>();
         collection.AddTransient<GetByEmailUseCase>();
+        
         return collection;
     }
     public static IServiceCollection RegisterRepositories(this IServiceCollection collection)

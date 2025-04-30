@@ -6,4 +6,4 @@ namespace Help.Desk.Domain.IRepositories;
 public interface IUserRepository: IGenericRepository<UserDto>
 {
      Task<UserDto> GetByEmailAsync(string email);
-}
+}    

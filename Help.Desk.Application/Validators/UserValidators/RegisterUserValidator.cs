@@ -1,3 +1,4 @@
+
 using FluentValidation;
 using Help.Desk.Domain.Dtos.UserDtos;
 
@@ -44,5 +45,7 @@ public class RegisterUserValidator : AbstractValidator<RegisterUserDto>
 
         RuleFor(r => r.Role)
             .NotEmpty().WithMessage("El rol es requerido.");
+        RuleFor(i => i.IsAgent)
+            .NotNull().WithMessage("El campo IsAgent es requerido.");
     }
 }

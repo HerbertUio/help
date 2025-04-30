@@ -44,7 +44,8 @@ public class CreateUserUseCase
             Password = registerUserDto.Password, // registerUserDto.Password = EncryptPassword(registerUserDto.Password);
             DepartmentId = registerUserDto.DepartmentId,
             Role = registerUserDto.Role,
-            Active = true
+            Active = true,
+            IsAgent = registerUserDto.IsAgent
         };
         var createdUser = await _userRepository.CreateAsync(newUser);
         if (createdUser == null)

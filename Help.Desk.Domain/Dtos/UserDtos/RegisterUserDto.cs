@@ -9,4 +9,5 @@ public class RegisterUserDto
     public string Password { get; set; }
     public int DepartmentId { get; set; }
     public string Role { get; set; }
+    public bool IsAgent { get; set; }
 }
